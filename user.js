@@ -39,9 +39,10 @@ User.delTasks = (ctx) => new Promise(async (resolve, reject) => {
     return (ctx) => ctx.reply('There is nothing')
   }
   
-  user.tasksArchive = user.tasksArchive.concat(user.tasks)
-    // .then(() => user.tasks = [])
-    // .catch(console.log('error of deleting'))
+  let archivarius = new Promise(async (resolve, reject) => {user.tasksArchive = user.tasksArchive.concat(user.tasks)
+    .then(() => user.tasks = [])
+    .catch(console.log('error of deleting'))
+  })
     resolve(user)
 })
 
