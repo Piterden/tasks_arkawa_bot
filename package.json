@@ -1,0 +1,20 @@
+{
+  "name": "tasks_arkasha_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "telegram",
+    "bot"
+  ],
+  "author": "Arkawa",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "mongoose": "^5.4.19",
+    "telegraf": "^3.27.1"
+  }
+}
