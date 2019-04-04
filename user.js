@@ -22,6 +22,7 @@ User.dbUpdate = (ctx) => new Promise(async (resolve, reject) => {
         user = new User()
         user.user_id = ctx.from.id
         user.tasks = []
+        user.tasksArchive = []
     }
     user.tasks.push(ctx.message.text)
 
@@ -36,17 +37,14 @@ User.delTasks = (ctx) => new Promise(async (resolve, reject) => {
   let user = await User.findOne({ user_id: ctx.from.id }).catch(reject)
 
   if (!user) {
-    return (ctx) => ctx.reply('There is nothing')
+    (ctx) => ctx.reply('There is nothing')
+    reject((ctx) => ctx.reply('There is nothing'))
   }
   
-  (() => {new Promise(function(resolve, reject) {
-    user.tasksArchive = user.tasksArchive.concat(user.tasks)
-      .catch(console.log('error of deleting'))
-    resolve()}
-  )})().then(() => user.tasks = [])
-    
+  user.tasksArchive = user.tasksArchive.concat(user.tasks).catch(console.log('error of deleting'))
+  user.tasks = []    
   
-    resolve(user)
+  resolve(user)
 })
 
   module.exports = User
