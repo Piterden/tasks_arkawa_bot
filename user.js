@@ -8,43 +8,42 @@ const userSchema = mongoose.Schema({
       sparse: true,
     },
     tasks: [String],
-    tasksArchive: [String],
+    backup: [String],
   }, {
     timestamps: true,
   })
 
 const User = mongoose.model('User', userSchema)
 
-User.dbUpdate = (ctx) => new Promise(async (resolve, reject) => {
-    let user = await User.findOne({ user_id: ctx.from.id }).catch(reject)
-    
-    if (!user) {
-        user = new User()
-        user.user_id = ctx.from.id
-        user.tasks = []
-        user.tasksArchive = []
-    }
-    user.tasks.push(ctx.message.text)
-
-    await user.save()
-
-    ctx.user = user
-
-    resolve(user)
-})
-
-User.delTasks = (ctx) => new Promise(async (resolve, reject) => {
-  let user = await User.findOne({ user_id: ctx.from.id }).catch(reject)
+User.dbUpdate = async (ctx) => {
+  const user = await User.findOne({ user_id: Number(ctx.from.id) })
+    .catch(console.error)
 
   if (!user) {
-    (ctx) => ctx.reply('There is nothing')
-    reject((ctx) => ctx.reply('There is nothing'))
+    user = new User()
+    user.user_id = ctx.from.id
+    user.tasks = []
+    user.backup = []
   }
-  
-  user.tasksArchive = user.tasksArchive.concat(user.tasks).catch(console.log('error of deleting'))
-  user.tasks = []    
-  
-  resolve(user)
+
+  user.tasks.push(ctx.message.text)
+  await user.save()
+
+  return user
 })
 
-  module.exports = User
+User.delTasks = async (ctx) => {
+  const user = await User.findOne({ user_id: Number(ctx.from.id) })
+    .catch(console.error)
+
+  if (!user) {
+    await ctx.reply('There is nobody!')
+  }
+
+  user.backup = [...user.backup, ...user.tasks]
+  user.tasks = []
+
+  return user
+})
+
+module.exports = User
